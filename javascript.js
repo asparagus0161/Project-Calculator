@@ -8,6 +8,13 @@ let userInput = {
     result: "",
 }
 
+function resetUserInput() {
+    userInput.a = "0";
+    userInput.b = "";
+    userInput.operator = "",
+    userInput.result = ""
+}
+
 function isNumberValid() {
     if (userInput.b === "") {
         userInput.b = userInput.a;
@@ -35,7 +42,8 @@ function noInput() {
 }
 
 function operator() {
-    switch (operator) {
+    isNumberValid();
+    switch (userInput.operator) {
         case ("+"):
             add();
             break;
@@ -53,6 +61,37 @@ function operator() {
     }
 }
 
+function textToOperator(input) {
+    switch (input) {
+        case ("ac"):
+            resetUserInput();
+            break;
+        case ("modulus"):
+            userInput.operator = "%";
+            break;
+        case ("divide"):
+            userInput.operator = "/";
+            break;
+        case ("multiply"):
+            userInput.operator = "*";
+            break;
+        case ("subtract"):
+            userInput.operator = "-";
+            break;
+        case ("add"):
+            userInput.operator = "*";
+            break;
+        case ("backspace"):
+            break;
+        case ("period"):
+            break;
+        case ("brackets"):
+            break;
+        case ("equal"):
+            operator();
+    }
+}
+
 function doesAnswerExist() {
     return userInput.result !== "";
 }
@@ -61,11 +100,23 @@ function doesOperatorExist() {
     return userInput.operator !== "";
 }
 
-function validateUserInput(input) {
-    if (input.match("^[0-9]")) {
-        console.log("is number");
+function evaluateExpression(input) {
+    if (!input.match("^[0-9]")) {
+        // Validate user input later
+        textToOperator(input);
+    } else {
+        if (userInput.operator !== "") {
+            userInput.b = userInput.b + input;
+        } else {
+            if (userInput.a === "0") {
+                userInput.a = input;
+            } else {
+                userInput.a = userInput.a + input;
+            }
+        }
     }
 
+    updateTextDisplay();
 }
 
 function updateTextDisplay() {
@@ -82,6 +133,8 @@ function updateTextDisplay() {
 }
 
 updateTextDisplay();
+
+
 
 function buttonHoverGrayOut(e) {
     const liElement = e.target.closest('li');
@@ -102,8 +155,8 @@ function identifyButtonPressed(e) {
     if (liElement) {
         const childElements = liElement.querySelectorAll('*');
         const child = Array.from(childElements);
-        console.log(child[0].id);
-        validateUserInput(child[0].id);
+        //console.log(child[0].id);
+        evaluateExpression(child[0].id);
     }
 }
 
